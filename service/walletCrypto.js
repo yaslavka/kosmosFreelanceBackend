@@ -12,15 +12,15 @@ const createWallet = (network = mainnet) => {
     var privateKey = new PrivateKey();
     var address = privateKey.toAddress(network);
     return {
-      privateKey: privateKey.toString(),
-      address: address.toString(),
+        privateKey: privateKey.toString(),
+        address: address.toString(),
     };
 };
-  
-  /**
-  A Hierarchical Deterministic (HD) wallet is the term used to describe a wallet which uses a seed to derive public and private keys
-  **/
-  
+
+/**
+ A Hierarchical Deterministic (HD) wallet is the term used to describe a wallet which uses a seed to derive public and private keys
+ **/
+
 const createHDWallet = (network = mainnet) => {
     let passPhrase = new Mnemonic(Mnemonic.Words.SPANISH);
     let xpriv = passPhrase.toHDPrivateKey(passPhrase.toString(), network);
@@ -41,12 +41,12 @@ const getBalanceBTC = async(adress)=>{
         )
         let balance
         if (response.data.data?.unconfirmed_balance < 0){
-            balance = response.data.data.confirmed_balance + response.data.data.unconfirmed_balance;
+            balance = (+response.data.data.confirmed_balance) + (+response.data.data.unconfirmed_balance);
         } else {
             balance = response?.data?.data?.confirmed_balance
         }
         if (balance){
-            return balance 
+            return balance
         } else {
             return false
         }
@@ -62,7 +62,7 @@ const updateBalanceBTCByUserId = async(userId)=>{
     if (walletBTC){
         const newBalance = await getBalanceBTC(walletBTC.address)
         if (newBalance){
-            let update = {balance: (+newBalance).toFixed(8)}
+            let update = {balance: newBalance}
             await BalanceCrypto.update(update, {where:{id:walletBTC.id}})
         }
     }
@@ -75,16 +75,15 @@ const sendBitcoin = async (sourceAddress, privateKey, recieverAddress, amountToS
         // "5548899adfc063c1560a8e75cd4b2070e818203d5b2ccc714dc52b7faed0033d";
         // const sourceAddress = "mxZjYuDTFbidwmsHUBB2tnNGTYooA8rNxP";
         const satoshiToSend = amountToSend * 100000000;
-        let fee = 0;
+        let fee = Math.floor(0.00015008 * 100000000);
         let inputCount = 0;
         let outputCount = 2;
-
         const response = await axios.get(
-        `https://sochain.com/api/v2/get_tx_unspent/${sochain_network}/${sourceAddress}`
+            `https://sochain.com/api/v2/get_tx_unspent/${sochain_network}/${sourceAddress}`
         );
 
         const recommendedFee = await axios.get(
-        "https://bitcoinfees.earn.com/api/v1/fees/recommended"
+            "https://bitcoinfees.earn.com/api/v1/fees/recommended"
         );
 
         const transaction = new bitcore.Transaction();
@@ -94,19 +93,18 @@ const sendBitcoin = async (sourceAddress, privateKey, recieverAddress, amountToS
         let utxos = response.data.data.txs;
 
         for (const element of utxos) {
-        let utxo = {};
-        utxo.satoshis = Math.floor(Number(element.value) * 100000000);
-        utxo.script = element.script_hex;
-        utxo.address = response.data.data.address;
-        utxo.txId = element.txid;
-        utxo.outputIndex = element.output_no;
-        totalAmountAvailable += utxo.satoshis;
-        inputCount += 1;
-        inputs.push(utxo);
+            let utxo = {};
+            utxo.satoshis = Math.floor(Number(element.value) * 100000000);
+            utxo.script = element.script_hex;
+            utxo.address = response.data.data.address;
+            utxo.txId = element.txid;
+            utxo.outputIndex = element.output_no;
+            totalAmountAvailable += utxo.satoshis;
+            inputCount += 1;
+            inputs.push(utxo);
         }
-    
-    console.log(satoshiToSend);
-    console.log(recieverAddress);
+
+
         /**
          * In a bitcoin transaction, the inputs contribute 180 bytes each to the transaction,
          * while the output contributes 34 bytes each to the transaction. Then there is an extra 10 bytes you add or subtract
@@ -114,15 +112,16 @@ const sendBitcoin = async (sourceAddress, privateKey, recieverAddress, amountToS
          * */
 
         const transactionSize =
-        inputCount * 180 + outputCount * 34 + 10 - inputCount;
+            inputCount * 180 + outputCount * 34 + 10 - inputCount;
 
-        fee = transactionSize * recommendedFee.data.hourFee/3; // satoshi per byte
+        // fee = transactionSize * recommendedFee.data.hourFee/3; // satoshi per byte
         if (totalAmountAvailable - satoshiToSend - fee < 0) {
-        throw new Error("Balance is too low for this transaction");
+            throw new Error("Balance is too low for this transaction");
         }
         //Set transaction input
         transaction.from(inputs);
-        
+
+        console.log(satoshiToSend);
         // set the recieving address and the amount to send
         transaction.to(recieverAddress, Math.floor(satoshiToSend));
 
@@ -139,11 +138,11 @@ const sendBitcoin = async (sourceAddress, privateKey, recieverAddress, amountToS
         const serializedTransaction = transaction.serialize();
         // Send transaction
         const result = await axios({
-        method: "POST",
-        url: `https://sochain.com/api/v2/send_tx/${sochain_network}`,
-        data: {
-            tx_hex: serializedTransaction,
-        },
+            method: "POST",
+            url: `https://sochain.com/api/v2/send_tx/${sochain_network}`,
+            data: {
+                tx_hex: serializedTransaction,
+            },
         });
         return result.data.data;
     } catch (error) {

@@ -243,6 +243,12 @@ const Transaction = sequelize.define("transaction", {
   date_of_transaction: { type: DataTypes.DATE, defaultValue: null },
   parent_matrix_id: { type: DataTypes.BIGINT, defaultValue: null },
 });
+const Winthdraw = sequelize.define("winthdraw", {
+    id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
+    amount: { type: DataTypes.INTEGER, defaultValue: null },
+    system: { type: DataTypes.STRING, defaultValue: null },
+    wallet: { type: DataTypes.STRING, defaultValue: null },
+});
 
 const TypeMatrix = sequelize.define("type_matrix", {
   id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
@@ -434,7 +440,8 @@ MatrixSeven.belongsTo(User, {as: 'user'});
 
 User.hasMany(Transaction);
 Transaction.belongsTo(User);
-
+User.hasMany(Winthdraw);
+Winthdraw.belongsTo(User);
 User.hasMany(Statistic);
 Statistic.belongsTo(User);
 User.hasMany(Statistics);
@@ -589,5 +596,6 @@ module.exports = {
   TypeMatrixFive,
   TypeMatrixSeven,
   User,
-    Statistics
+    Statistics,
+    Winthdraw
 };

@@ -4,15 +4,15 @@ const http = require("http");
 const { Server } = require("socket.io");
 // const https = require("https");
 // const privateKey = fs.readFileSync(
-//   "/etc/letsencrypt/live/tmcoder.ru/privkey.pem",
+//   "/etc/letsencrypt/live/eldorad.host/privkey.pem",
 //   "utf8"
 // );
 // const certificate = fs.readFileSync(
-//   "/etc/letsencrypt/live/tmcoder.ru/cert.pem",
+//   "/etc/letsencrypt/live/eldorad.host/cert.pem",
 //   "utf8"
 // );
 // const ca = fs.readFileSync(
-//   "/etc/letsencrypt/live/tmcoder.ru/chain.pem",
+//   "/etc/letsencrypt/live/eldorad.host/chain.pem",
 //   "utf8" 
 // );  
 const express = require("express"); 
@@ -45,12 +45,14 @@ const { createHDWallet, sendBitcoin, getBalanceBTC } = require("./service/wallet
 app.use(cors());
 app.use(express.json());
 app.use("/api/user", express.static(path.resolve(__dirname, "files", "images")));
+app.use("/", express.static(path.resolve(__dirname, "files")));
 app.use(fileUpload({}));
 app.use("/api", router);
 app.use(ErrorHandlingMiddleware);
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
+    //origin: "http://kosmoss.host",
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
