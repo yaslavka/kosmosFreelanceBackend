@@ -1,10 +1,22 @@
 const ApiError = require("../error/ApiError");
 const jwt_decode = require("jwt-decode");
 const freekassa = require("freekassa-node");
+const bcrypt = require("bcrypt");
 
-const { User } = require("../models/models");
+const { User, Transaction } = require("../models/models");
 
 class WalletControllers {
+    async transaction(req, res, next){
+        const {transaction} = req.query
+        const { authorization } = req.headers;
+        const token = authorization.slice(7);
+        const decodeToken = jwt_decode(token);
+        const user = await User.findOne({
+            where: { username: decodeToken.username },
+        });
+        const trans =await Transaction.findAll({ where: { userId: user.id } })
+        return res.json({items:trans})
+    }
     async transfer(req, res, next){
         let updateMinus
         const { amount, password, username } = req.body;

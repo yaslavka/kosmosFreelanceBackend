@@ -10,6 +10,7 @@ router.get('/success', WalletControllers.redirect)
 router.get('/error',WalletControllers.redirect)
 router.get('/warning', WalletControllers.redirect)
 router.post('/transfer', WalletControllers.transfer)
+router.get('/transactions', WalletControllers.transaction)
 
 
 
