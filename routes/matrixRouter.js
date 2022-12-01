@@ -1,0 +1,35 @@
+const Router = require('express')
+const matrixController = require('../controllers/MatrixControllers')
+const PegasUnoControllers = require('../controllers/PegasUnoControllers')
+const MiniControllers = require('../controllers/MiniController')
+const MatrixAutoController = require('../controllers/MatrixAutoControllers')
+
+const router = new Router()
+
+
+router.get('/clone-stat', matrixController.getCount)
+router.get('/uno/clone-stat', PegasUnoControllers.getCloneStat)
+router.get('/clone', matrixController.clone)
+router.get('/type', matrixController.getType)
+router.get('/uno/type', PegasUnoControllers.getType)
+router.post('/buy', matrixController.buy)
+router.post('/uno/buy', PegasUnoControllers.buy)
+router.post('/target-install-clone', matrixController.targetClone)
+router.get('/structure', matrixController.structure)
+router.get('/uno/structure', PegasUnoControllers.structure)
+router.get('/structure-upper', matrixController.structureUpper)
+router.get('/uno/structure-upper', PegasUnoControllers.structureUpper)
+router.get('/mini/type', MiniControllers.getType)
+router.get('/mini/clone-stat', MiniControllers.getCloneStat)
+router.post('/mini/buy', MiniControllers.buy)
+router.get('/mini/structure', MiniControllers.structure)
+router.get('/mini/structure-upper', MiniControllers.structureUpper)
+router.get('/auto/type', MatrixAutoController.getType)
+router.get('/auto/structure', MatrixAutoController.structure)
+router.post('/auto/buy', MatrixAutoController.buy)
+router.get('/auto/clone', MatrixAutoController.clone)
+router.post('/auto/target-install-clone', MatrixAutoController.targetClone)
+router.get('/auto/structure-upper', MatrixAutoController.structureUpper)
+
+
+module.exports = router 
