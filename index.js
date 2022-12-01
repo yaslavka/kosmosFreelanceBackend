@@ -2,19 +2,19 @@ require("dotenv").config();
 const fs = require("fs");
 const http = require("http");
 const { Server } = require("socket.io");
-// const https = require("https");
-// const privateKey = fs.readFileSync(
-//   "/etc/letsencrypt/live/eldorad.host/privkey.pem",
-//   "utf8"
-// );
-// const certificate = fs.readFileSync(
-//   "/etc/letsencrypt/live/eldorad.host/cert.pem",
-//   "utf8"
-// );
-// const ca = fs.readFileSync(
-//   "/etc/letsencrypt/live/eldorad.host/chain.pem",
-//   "utf8" 
-// );  
+const https = require("https");
+const privateKey = fs.readFileSync(
+  "/etc/letsencrypt/live/eldorad.host/privkey.pem",
+  "utf8"
+);
+const certificate = fs.readFileSync(
+  "/etc/letsencrypt/live/eldorad.host/cert.pem",
+  "utf8"
+);
+const ca = fs.readFileSync(
+  "/etc/letsencrypt/live/eldorad.host/chain.pem",
+  "utf8"
+);
 const express = require("express"); 
 const sequelize = require("./db");
 const models = require("./models/models");
@@ -36,11 +36,11 @@ const exchangeBot = require("./service/exchangeBot");
 const { ChatTable } = require("./models/chatTable");
 const { createHDWallet, sendBitcoin, getBalanceBTC } = require("./service/walletCrypto");
 
-// const credentials = {
-//   key: privateKey,
-//   cert: certificate,
-//   ca: ca,
-// };
+const credentials = {
+  key: privateKey,
+  cert: certificate,
+  ca: ca,
+};
 
 app.use(cors());
 app.use(express.json());
@@ -50,13 +50,15 @@ app.use(fileUpload({}));
 app.use("/api", router);
 app.use(ErrorHandlingMiddleware);
 const server = http.createServer(app);
-const io = new Server(server, {
+const serve = https.createServer(credentials, app);
+const io = new Server(serve, {
   cors: {
-    //origin: "http://kosmoss.host",
-    origin: "http://localhost:3000",
+    origin: "https://kosmoss.host",
+    //origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
+
 
 
 
@@ -140,13 +142,12 @@ const writeOffMatrixTableCount = async () => {
 }
 
 const start = async () => {
-  // const httpServer = http.createServer(app);
-  // const httpsServer = https.createServer(credentials, app);
+
   try {
     await sequelize.authenticate();
     await sequelize.sync();
-    server.listen(5000, () => console.log(`server started on port 5000`));
-    // httpsServer.listen(443, () => console.log(`server started on port 443`));
+    server.listen(80, () => console.log(`server started on port 80`));
+    serve.listen(443, () => console.log(`server started on port 443`));
     // app.listen(PORT, ()=> console.log(`server started on port ${PORT}`))
     const typeMatrixSecondCount = await models.TypeMatrixSecond.count()
     const typeMatrixThirdCount = await models.TypeMatrixThird.count()
@@ -190,12 +191,12 @@ const start = async () => {
     }
     // const marketCount = await Market.count()
     // if (marketCount === 0){
-    //   await exchangeParser() 
+    //   await exchangeParser()
     // }
 
     setInterval(writeOffMatrixTableCount, 2 * 60 * 60 * 1000);
     // setInterval(async ()=>{exchangeParser('all')}, 6 * 60 * 60 * 1000);
-    // while (true) {Second
+    // while (true) {
     //   await exchangeParser('top')
     // }
 
@@ -226,12 +227,16 @@ const start = async () => {
         console.log("User Disconnected", socket.id);
       }); 
     });
+
     const send = await getBalanceBTC('mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB') 
     // const send = await sendBitcoin('mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB', 0.01380908)
     console.log(send);
   } catch (error) {
     console.log(error);  
-  }  
+  }
+  while (true) {
+    await exchangeParser('top')
+  }
 };
 
 start();
