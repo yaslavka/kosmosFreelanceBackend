@@ -35,7 +35,7 @@ const createHDWallet = (network = mainnet) => {
 
 const getBalanceBTC = async(adress)=>{
     try {
-        const sochain_network = "BTCTEST";
+        const sochain_network = "BTC";
         const response = await axios.get(
             `https://sochain.com/api/v2/get_address_balance/${sochain_network}/${adress}`
         )
@@ -70,7 +70,7 @@ const updateBalanceBTCByUserId = async(userId)=>{
 
 const sendBitcoin = async (sourceAddress, privateKey, recieverAddress, amountToSend) => {
     try {
-        const sochain_network = "BTCTEST";
+        const sochain_network = "BTC";
         // const privateKey =
         // "5548899adfc063c1560a8e75cd4b2070e818203d5b2ccc714dc52b7faed0033d";
         // const sourceAddress = "mxZjYuDTFbidwmsHUBB2tnNGTYooA8rNxP";

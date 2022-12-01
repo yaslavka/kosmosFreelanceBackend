@@ -116,7 +116,7 @@ class WalletControllers {
           status_url: "https://kosmos_project/api/wallet/warning",
       };
       const description =
-          "0J7Qv9C70LDRgtCwINC00LvRjyDQvNCw0LPQsNC30LjQvdCwIHgtbGlmZQ==";
+          "0J7Qv9C70LDRgtCwINCyINC80LDQs9Cw0LfQuNC90LUg0JrQvtGB0LzQvtGB";
       const hash = [shopId, orderId, amount, currency, description];
       hash.push(secretKey);
       const sign = sha256(hash.join(":")).toUpperCase();

@@ -14,6 +14,7 @@ router.get('/warning', WalletControllers.redirect)
 router.post('/transfer', WalletControllers.transfer)
 router.get('/transactions', WalletControllers.transaction)
 router.post('/create-withdraw', WalletControllers.withdraw)
+router.post('/create-payeer-withdraw', WalletControllers.withdraw)
 
 
 

@@ -25,7 +25,7 @@ BalanceCrypto
         if (balanceCryptoCheck){
             return next(ApiError.badRequest("У вас уже есть кошелек"));
         }
-        const btcWallet = createHDWallet(testnet)
+        const btcWallet = createHDWallet(mainnet)
         const btcWalletItem = await BalanceCrypto.create({
           xpub:btcWallet.xpub,
           privateKey:btcWallet.privateKey,
