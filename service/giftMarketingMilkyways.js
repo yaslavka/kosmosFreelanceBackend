@@ -9,7 +9,7 @@ const {
 } = require("../models/models");
 
 const remunerationUser = async(user, summ)=>{
-    let updateBalance = { balance: `${(+user.balance) + summ}.00000000` };
+    let updateBalance = { balance: (+parseInt(user.balance)) + parseInt(summ) };
     await User.update(updateBalance, { where: { id: user.id } });
     const statisticData = await Statistics.findOne({where:{userId:user.id}})
     let updateStatisticInventory = {myInviterIncome:statisticData.myInviterIncome + summ}
@@ -19,7 +19,7 @@ const remunerationReferal = async(user, summ)=>{
     const referalMatrix = await Matrix_TableSix.findOne({where:{userId:user.referal_id}})
     if (referalMatrix){
         const referalUser = await User.findOne({where:{id:user.referal_id}})
-        let updateReferalBalance = { balance: `${(+referalUser.balance) + summ}.00000000` };
+        let updateReferalBalance = { balance: (+parseInt(referalUser.balance)) + parseInt(summ) };
         await User.update(updateReferalBalance, { where: { id: user.referal_id } });
     }
 }
@@ -40,7 +40,7 @@ const giftMatrixMilkyWay = async(user, count)=>{
             matrixSixId: matrixItem.id,
             typeMatrixSixId: 1,
             userId: user.id,
-            count: 2160
+            count: 5000
         })
         const userItemsInMAtrixTable = await Matrix_TableSix.findAll({
             where: { userId: user.id }
@@ -60,7 +60,7 @@ const giftInvest = async(user, summ)=>{
     const investBoxItem = await InvestBox.create({
         status:'активный',
         userId:user.id,
-        summ:summ
+        summ:parseInt(summ)
     })
 }
 

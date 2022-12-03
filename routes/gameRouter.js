@@ -4,7 +4,7 @@ const router = new Router()
 
 
 
-router.post('/', GameControllers.project)
+router.post('/html5/evoplay', GameControllers.project)
 
 
 

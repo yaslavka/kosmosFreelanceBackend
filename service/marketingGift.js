@@ -11,20 +11,22 @@ module.exports = async (count, parentId, typeMatrix) => {
     const matrixTableData = await MatrixSecond.findOne({
       where: { id: parentId },
     });
+
     const user = await User.findOne({ where: { id: matrixTableData.userId } });
     switch (typeMatrix) {
       case 1:
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 11, } })
           if (!transactionCheck) {
-            let update = { balance: `${(+user.balance) + 500}.00000000` };
+            let update = { balance: (+parseInt(user.balance)) + parseInt('500') };
             await User.update(update, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
               transaction_type: 11,
-              value: 500,
+              value: parseInt('500'),
               parent_matrix_id: parentId,
               userId: user.id
             })
@@ -66,11 +68,12 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
               transaction_type: 12,
-              value: 1000,
+              value: parseInt('1000'),
               parent_matrix_id: parentId,
               userId: matrixItem.userId
             })
@@ -81,11 +84,12 @@ module.exports = async (count, parentId, typeMatrix) => {
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 6 место',
                 date_of_transaction: new Date(),
                 position: 6,
                 transaction_type: 12,
-                value: 1000,
+                value: parseInt('1000'),
                 parent_matrix_id: parentId,
                 userId: checkMatrixTable.userId
               })
@@ -98,14 +102,15 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 21, } })
           if (!transactionCheck) {
-            let update = { balance: `${(+user.balance) + 500}.00000000` };
+            let update = { balance: (+parseInt(user.balance)) + parseInt('500') };
             await User.update(update, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
               transaction_type: 21,
-              value: 500,
+              value: parseInt('500'),
               parent_matrix_id: parentId,
               userId: user.id
             })
@@ -118,11 +123,12 @@ module.exports = async (count, parentId, typeMatrix) => {
             let update = { count: matrixTable.count + 1 }
             await Matrix_TableSecond.update(update, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
               transaction_type: 22,
-              value: 500,
+              value: parseInt('500'),
               parent_matrix_id: parentId,
               userId: user.id
             })
@@ -135,11 +141,12 @@ module.exports = async (count, parentId, typeMatrix) => {
             let update = { count: matrixTable.count + 1 }
             await Matrix_TableSecond.update(update, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
               transaction_type: 23,
-              value: 500,
+              value: parseInt('500'),
               parent_matrix_id: parentId,
               userId: user.id
             })
@@ -184,6 +191,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -201,6 +209,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -218,12 +227,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 31, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 1000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('1000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 2 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -237,12 +247,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 32, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 1000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('1000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 2 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -256,7 +267,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 33, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 1000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('1000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 2 }
@@ -264,10 +275,11 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 500}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('500')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -281,7 +293,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count === 7) {
           const checkMatrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 4 } })
           if (!checkMatrixTable) {
-            let updateBalance = { balance: `${(+user.balance) + 1000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('1000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 2 }
@@ -289,7 +301,7 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 500}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('500')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const referalId = user.referal_id;
@@ -325,6 +337,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -336,7 +349,7 @@ module.exports = async (count, parentId, typeMatrix) => {
           } else {
             const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 34, } })
             if (!transactionCheck) {
-              let updateBalance = { balance: `${(+user.balance) + 1000}.00000000` };
+              let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('1000') };
               await User.update(updateBalance, { where: { id: user.id } });
               const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
               let updateCount = { count: matrixTable.count + 2 }
@@ -344,12 +357,13 @@ module.exports = async (count, parentId, typeMatrix) => {
               const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
               if (matrixPegasCheckReferal){
                 const referalUser = await User.findOne({where:{id:user.referal_id}})
-                let updateBalanceReferal = {balance: `${(+referalUser.balance) + 500}.00000000`}
+                let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('500')}
                 await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
               }
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -367,12 +381,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 41, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 2000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('2000')};
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 4 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -386,12 +401,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 42, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 2000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('2000')};
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 4 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -405,7 +421,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 43, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 2000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('2000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 4 }
@@ -413,10 +429,11 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 1000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('1000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -430,7 +447,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count === 7) {
           const checkMatrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 5 } })
           if (!checkMatrixTable) {
-            let updateBalance = { balance: `${(+user.balance) + 2000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('2000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 4 }
@@ -438,7 +455,7 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 1000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('1000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const referalId = user.referal_id;
@@ -474,6 +491,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -485,7 +503,7 @@ module.exports = async (count, parentId, typeMatrix) => {
           } else {
             const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 44, } })
             if (!transactionCheck) {
-              let updateBalance = { balance: `${(+user.balance) + 2000}.00000000` };
+              let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('2000') };
               await User.update(updateBalance, { where: { id: user.id } });
               const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
               let updateCount = { count: matrixTable.count + 4 }
@@ -493,12 +511,13 @@ module.exports = async (count, parentId, typeMatrix) => {
               const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
               if (matrixPegasCheckReferal){
                 const referalUser = await User.findOne({where:{id:user.referal_id}})
-                let updateBalanceReferal = {balance: `${(+referalUser.balance) + 1000}.00000000`}
+                let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('1000')}
                 await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
               }
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -516,12 +535,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 51, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 3000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('3000')};
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 5 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -535,12 +555,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 52, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 3000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('3000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 5 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -554,7 +575,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 53, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 3000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('3000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 5 }
@@ -562,10 +583,11 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 1000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('1000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -579,7 +601,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count === 7) {
           const checkMatrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 6 } })
           if (!checkMatrixTable) {
-            let updateBalance = { balance: `${(+user.balance) + 3000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('3000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 5 }
@@ -587,7 +609,7 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 1000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('1000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const referalId = user.referal_id;
@@ -623,6 +645,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -634,7 +657,7 @@ module.exports = async (count, parentId, typeMatrix) => {
           } else {
             const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 54, } })
             if (!transactionCheck) {
-              let updateBalance = { balance: `${(+user.balance) + 3000}.00000000` };
+              let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('3000') };
               await User.update(updateBalance, { where: { id: user.id } });
               const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
               let updateCount = { count: matrixTable.count + 5 }
@@ -642,12 +665,13 @@ module.exports = async (count, parentId, typeMatrix) => {
               const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
               if (matrixPegasCheckReferal){
                 const referalUser = await User.findOne({where:{id:user.referal_id}})
-                let updateBalanceReferal = {balance: `${(+referalUser.balance) + 1000}.00000000`}
+                let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('1000')}
                 await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
               }
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -665,12 +689,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 61, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 5000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('5000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 10 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -684,12 +709,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 62, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 5000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('5000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 10 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -703,7 +729,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 63, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 5000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('5000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 10 }
@@ -711,10 +737,11 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 2000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('2000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -728,7 +755,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count === 7) {
           const checkMatrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 7 } })
           if (!checkMatrixTable) {
-            let updateBalance = { balance: `${(+user.balance) + 5000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('5000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 10 }
@@ -736,7 +763,7 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 2000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('2000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const referalId = user.referal_id;
@@ -772,6 +799,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -783,7 +811,7 @@ module.exports = async (count, parentId, typeMatrix) => {
           } else {
             const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 64, } })
             if (!transactionCheck) {
-              let updateBalance = { balance: `${(+user.balance) + 5000}.00000000` };
+              let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('5000') };
               await User.update(updateBalance, { where: { id: user.id } });
               const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
               let updateCount = { count: matrixTable.count + 10 }
@@ -791,12 +819,13 @@ module.exports = async (count, parentId, typeMatrix) => {
               const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
               if (matrixPegasCheckReferal){
                 const referalUser = await User.findOne({where:{id:user.referal_id}})
-                let updateBalanceReferal = {balance: `${(+referalUser.balance) + 2000}.00000000`}
+                let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('2000')}
                 await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
               }
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -814,12 +843,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 71, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 7000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('7000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 8 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -833,12 +863,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 72, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 7000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('7000')  };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 8 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -852,7 +883,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 73, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 7000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('7000')  };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 8 }
@@ -860,10 +891,11 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 3000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('3000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -877,7 +909,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count === 7) {
           const checkMatrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 8 } })
           if (!checkMatrixTable) {
-            let updateBalance = { balance: `${(+user.balance) + 7000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('7000')  };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 8 }
@@ -885,7 +917,7 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 3000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('3000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const referalId = user.referal_id;
@@ -922,6 +954,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -933,7 +966,7 @@ module.exports = async (count, parentId, typeMatrix) => {
           } else {
             const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 74, } })
             if (!transactionCheck) {
-              let updateBalance = { balance: `${(+user.balance) + 7000}.00000000` };
+              let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('7000')  };
               await User.update(updateBalance, { where: { id: user.id } });
               const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
               let updateCount = { count: matrixTable.count + 8 }
@@ -941,12 +974,13 @@ module.exports = async (count, parentId, typeMatrix) => {
               const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
               if (matrixPegasCheckReferal){
                 const referalUser = await User.findOne({where:{id:user.referal_id}})
-                let updateBalanceReferal = {balance: `${(+referalUser.balance) + 3000}.00000000`}
+                let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('3000')}
                 await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
               }
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -964,12 +998,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 81, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 15000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('15000')  };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 30 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -983,12 +1018,13 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 82, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 15000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('15000')  };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 30 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -1002,7 +1038,7 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 83, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 15000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('15000')  };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixTable = await Matrix_TableSecond.findOne({ where: { userId: user.id, typeMatrixSecondId: 1 } })
             let updateCount = { count: matrixTable.count + 30 }
@@ -1010,10 +1046,11 @@ module.exports = async (count, parentId, typeMatrix) => {
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 5000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('5000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -1059,6 +1096,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -1073,6 +1111,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -1090,9 +1129,10 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 91, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 20000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('20000')  };
             await User.update(updateBalance, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -1106,9 +1146,10 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 92, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 20000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('20000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -1122,15 +1163,16 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 93, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 15000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('15000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 5000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('5000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -1176,6 +1218,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -1190,6 +1233,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -1207,9 +1251,10 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 101, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 25000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('25000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -1223,9 +1268,10 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 102, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 25000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('25000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -1239,15 +1285,16 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 103, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 20000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('20000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 5000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('5000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -1293,6 +1340,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -1307,6 +1355,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -1324,9 +1373,10 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 111, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 30000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('30000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -1340,9 +1390,10 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 112, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 30000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('30000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -1356,15 +1407,16 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 113, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 25000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('25000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const matrixPegasCheckReferal = await Matrix_TableSecond.findOne({where:{userId:user.referal_id}})
             if (matrixPegasCheckReferal){
               const referalUser = await User.findOne({where:{id:user.referal_id}})
-              let updateBalanceReferal = {balance: `${(+referalUser.balance) + 5000}.00000000`}
+              let updateBalanceReferal = {balance: (+parseInt(referalUser.balance)) + parseInt('5000')}
               await User.update(updateBalanceReferal, { where: { id: referalUser.id } });
             }
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -1410,6 +1462,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               count: 0,
             });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 7 место',
               date_of_transaction: new Date(),
               position: 6,
@@ -1424,6 +1477,7 @@ module.exports = async (count, parentId, typeMatrix) => {
               let update = { count: checkMatrixTable.count + 1 }
               await Matrix_TableSecond.update(update, { where: { id: checkMatrixTable.id } })
               const transaction = await Transaction.create({
+                username:user.username,
                 comment: 'Выплата за 7 место',
                 date_of_transaction: new Date(),
                 position: 6,
@@ -1441,9 +1495,10 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 4) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 121, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 60000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('60000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 4 место',
               date_of_transaction: new Date(),
               position: 3,
@@ -1457,9 +1512,10 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 5) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 122, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 60000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('60000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 5 место',
               date_of_transaction: new Date(),
               position: 4,
@@ -1473,9 +1529,10 @@ module.exports = async (count, parentId, typeMatrix) => {
         if (count >= 6) {
           const transactionCheck = await Transaction.findOne({ where: { parent_matrix_id: parentId, transaction_type: 123, } })
           if (!transactionCheck) {
-            let updateBalance = { balance: `${(+user.balance) + 60000}.00000000` };
+            let updateBalance = { balance: (+parseInt(user.balance)) + parseInt('60000') };
             await User.update(updateBalance, { where: { id: user.id } });
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,
@@ -1493,6 +1550,7 @@ module.exports = async (count, parentId, typeMatrix) => {
             let updateCount = { count: matrixTable.count + 12 }
             await Matrix_TableSecond.update(updateCount, { where: { id: matrixTable.id } })
             const transaction = await Transaction.create({
+              username:user.username,
               comment: 'Выплата за 6 место',
               date_of_transaction: new Date(),
               position: 5,

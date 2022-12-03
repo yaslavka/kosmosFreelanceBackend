@@ -25,7 +25,7 @@ const updateOrCreate = async function (model, where, newItem) {
 }
 
 const remunerationUser = async(user, summ)=>{
-    let updateBalance = { balance: `${(+user.balance) + summ}.00000000` };
+    let updateBalance = { balance: (+parseInt(user.balance)) + parseInt(summ) };
     await User.update(updateBalance, { where: { id: user.id } });
     const statisticData = await Statistic.findOne({where:{userId:user.id}})
     let updateStatisticInventory = {myInviterIncome:statisticData.myInviterIncome + summ}
@@ -35,7 +35,7 @@ const remunerationReferal = async(user, summ)=>{
     const referalMatrix = await Matrix_Table.findOne({where:{userId:user.referal_id}})
     if (referalMatrix){
         const referalUser = await User.findOne({where:{id:user.referal_id}})
-        let updateReferalBalance = { balance: `${(+referalUser.balance) + summ}.00000000` };
+        let updateReferalBalance = { balance: (+parseInt(referalUser.balance)) + parseInt(summ) };
         await User.update(updateReferalBalance, { where: { id: user.referal_id } });
     }
 }
@@ -76,7 +76,7 @@ const giftInvest = async(user, summ)=>{
     const investBoxItem = await InvestBox.create({
         status:'активный',
         userId:user.id,
-        summ:summ
+        summ:parseInt(summ)
     })
 }
 
@@ -335,10 +335,10 @@ class StarControllers {
         const user = await User.findOne({
             where: { username: decodeToken.username },
         });
-        if (user.balance < 2160) { 
+        if (parseInt(user.balance) < parseInt('2160.00000000')) {
             return next(ApiError.badRequest("Недостаточно средств"));
         }
-        let update = { balance: `${((+ user.balance) - 2160)}.00000000` }
+        let update = { balance: ((+ parseInt(user.balance)) - parseInt('2160.00000000')) }
 
         let temp = await User.update(update, { where: { username: decodeToken.username } })
         const level = 1;
@@ -418,11 +418,11 @@ class StarControllers {
         const user = await User.findOne({
             where: { username: decodeToken.username },
         });
-        let summ = planets.length * 2160;
-        if (+(user.balance) < summ) {
+        let summ = planets.length * parseInt('2160.00000000');
+        if (+(parseInt(user.balance)) < summ) {
             return next(ApiError.badRequest("Недостаточно средств"));
         }
-        let update = { balance: `${((+ user.balance) - summ)}.00000000` }
+        let update = { balance: ((+ parseInt(user.balance)) - summ) }
         let temp = await User.update(update, { where: { username: decodeToken.username } })
         planets.map(async (id) => {
             let matrix = await Matrix_Table.findOne({ where: id })
@@ -434,7 +434,7 @@ class StarControllers {
         const updatedStatistic = await Statistic.update(updateData, { where: { userId: user.id, } })
         let allPlanet = statisticItems.all_planet;
         let allComet = statisticItems.all_comet + summ;
-        updateStatistic(allComet, allPlanet)
+        await updateStatistic(allComet, allPlanet)
         return res.json(true)
 
     }

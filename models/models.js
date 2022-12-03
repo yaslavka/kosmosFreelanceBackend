@@ -229,23 +229,24 @@ const Role = sequelize.define("role", {
 
 const InvestBox = sequelize.define("invest-box", {
   id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-  summ: { type: DataTypes.DOUBLE, defaultValue: null },
+  summ: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
   status:{type: DataTypes.STRING, defaultValue:null}
 });
 
 
 const Transaction = sequelize.define("transaction", { 
   id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
+    username: { type: DataTypes.STRING, allowNull: false },
   position: { type: DataTypes.INTEGER, allowNull: false },
   transaction_type: { type: DataTypes.INTEGER, defaultValue: null },
-  value: { type: DataTypes.INTEGER, allowNull: false },
+  value: { type: DataTypes.DECIMAL(61,8), allowNull: false },
   comment: { type: DataTypes.STRING, defaultValue: null },
   date_of_transaction: { type: DataTypes.DATE, defaultValue: null },
   parent_matrix_id: { type: DataTypes.BIGINT, defaultValue: null },
 });
 const Winthdraw = sequelize.define("winthdraw", {
     id: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true },
-    amount: { type: DataTypes.INTEGER, defaultValue: null },
+    amount: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
     system: { type: DataTypes.STRING, defaultValue: null },
     wallet: { type: DataTypes.STRING, defaultValue: null },
 });
@@ -350,7 +351,7 @@ const User = sequelize.define(
     activation_date: { type: DataTypes.DATE, defaultValue: null },
     active_partners: { type: DataTypes.INTEGER, defaultValue:0 },
     avatar: { type: DataTypes.STRING, defaultValue: null },
-      balance: { type: DataTypes.DOUBLE, defaultValue: 0.00000000, allowNull: false },
+      balance: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000, allowNull: false },
     can_create_comment: { type: DataTypes.BOOLEAN,  defaultValue:false },
     email: { type: DataTypes.STRING, allowNull: false },
     finance_password: { type: DataTypes.STRING, defaultValue: null },
@@ -362,7 +363,7 @@ const User = sequelize.define(
     instagram: { type: DataTypes.STRING, defaultValue: null },
     is_verified: { type: DataTypes.INTEGER, defaultValue: 0 },
     last_name: { type: DataTypes.STRING, defaultValue: null },
-    locale: { type: DataTypes.STRING, defaultValue: null },
+    locale: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
     password: { type: DataTypes.STRING, allowNull: false },
     phone: { type: DataTypes.STRING, allowNull: false },
     ref_link: { type: DataTypes.STRING, defaultValue: null },

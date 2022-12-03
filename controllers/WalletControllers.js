@@ -17,15 +17,18 @@ class WalletControllers {
         const user = await User.findOne({
             where: { username: decodeToken.username },
         });
+        if (!user.finance_password){
+            return next(ApiError.internal("Создайте пароль"));
+        }
         let updateMinus
         let comparePassword = bcrypt.compareSync(password, user.finance_password);
         if (!comparePassword) {
             return next(ApiError.internal("Неверный пароль"));
         }
-        if (user.balance < amount){
+        if (parseInt(user.balance) < parseInt(amount)){
             return next(ApiError.internal("Не хватает средств"));
         }
-        updateMinus = { balance: user.balance - amount };
+        updateMinus = { balance: parseInt(user.balance) - parseInt(amount) };
         await User.update(updateMinus, {where:{id:user.id}})
         const item = await Winthdraw.create({
             amount, system, wallet
@@ -53,6 +56,9 @@ class WalletControllers {
         const user = await User.findOne({
             where: { username: decodeToken.username },
         });
+        if (!user.finance_password){
+            return next(ApiError.internal("Создайте пароль"));
+        }
         let comparePassword = bcrypt.compareSync(password, user.finance_password);
         if (!comparePassword) {
             return next(ApiError.internal("Неверный пароль"));
@@ -60,7 +66,7 @@ class WalletControllers {
         if (user.balance < amount){
             return next(ApiError.internal("Не хватает средств"));
         }
-        updateMinus = { balance: user.balance - amount };
+        updateMinus = { balance: parseInt(user.balance) - parseInt(amount) };
         await User.update(updateMinus, {where:{id:user.id}})
         const userForTransfer = await User.findOne({
             where: { username },
@@ -68,7 +74,7 @@ class WalletControllers {
         if (!userForTransfer){
             return next(ApiError.internal("Нет такого пользователья"));
         }
-        let update = {locale: userForTransfer.locale + amount}
+        let update = {locale: parseInt(userForTransfer.locale) + parseInt(amount)}
         await User.update(update, {where:{id:userForTransfer.id}})
         return res.json(update);
     }
@@ -146,7 +152,7 @@ class WalletControllers {
                 where: { username: MERCHANT_ORDER_ID },
             });
             if (AMOUNT){
-                update = { balance: user.balance + AMOUNT };
+                update = {balance: parseInt(user.balance)+ parseInt(AMOUNT)}
             }
             await User.update(update, { where: { username: MERCHANT_ORDER_ID } });
         }
@@ -154,10 +160,37 @@ class WalletControllers {
         return res.redirect(url);
     }
   async redirectAndpyer(req, res, next) {
-
+        const {m_orderid, m_amount} = req.query
+      console.log(m_orderid && m_amount);
+      console.log(m_orderid, m_amount);
+      let update = {};
+      if (m_orderid && m_amount){
+          const user = await User.findOne({where:{username: m_orderid},
+          });
+          if (m_amount){
+              update = {balance: parseInt(user.balance)+ parseInt(m_amount)}
+          }
+          await User.update(update, {where: { username: m_orderid }})
+      }
     const url = "https://kosmoss.host/leader";
     return res.redirect(url);
   }
+    async reditAndpyer(req, res, next) {
+        const {m_orderid, m_amount} = req.query
+        console.log(m_orderid && m_amount);
+        console.log(m_orderid, m_amount);
+        let update = {};
+        if (m_orderid && m_amount){
+            const user = await User.findOne({where:{username: m_orderid},
+            });
+            if (m_amount){
+                update = {balance: user.balance +m_amount}
+            }
+            await User.update(update, {where: { username: m_orderid }})
+        }
+        return res.json(m_orderid);
+    }
+
     async redirect(req, res, next) {
 
         const url = "https://kosmoss.host/leader";

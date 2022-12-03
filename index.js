@@ -146,7 +146,7 @@ const start = async () => {
   try {
     await sequelize.authenticate();
     await sequelize.sync();
-    server.listen(80, () => console.log(`server started on port 80`));
+    server.listen(5000, () => console.log(`server started on port 5000`));
     serve.listen(443, () => console.log(`server started on port 443`));
     // app.listen(PORT, ()=> console.log(`server started on port ${PORT}`))
     const typeMatrixSecondCount = await models.TypeMatrixSecond.count()
@@ -194,7 +194,7 @@ const start = async () => {
     //   await exchangeParser()
     // }
 
-    setInterval(writeOffMatrixTableCount, 2 * 60 * 60 * 1000);
+    //setInterval(writeOffMatrixTableCount, 2 * 60 * 60 * 1000);
     // setInterval(async ()=>{exchangeParser('all')}, 6 * 60 * 60 * 1000);
     // while (true) {
     //   await exchangeParser('top')
@@ -228,9 +228,9 @@ const start = async () => {
       }); 
     });
 
-    const send = await getBalanceBTC('mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB') 
+    //const send = await getBalanceBTC('mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB')
     // const send = await sendBitcoin('mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB', 0.01380908)
-    console.log(send);
+    //console.log(send);
   } catch (error) {
     console.log(error);  
   }

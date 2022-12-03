@@ -198,10 +198,10 @@ class MatrixController {
     const price = (await TypeMatrixSecond.findOne({ where: { id: matrix_id } }))
       .summ;
     const user = await User.findOne({ where: { username } });
-    if (+user.balance < price) {
+    if (+parseInt(user.balance) < parseInt(price)) {
       return next(ApiError.badRequest("Недостатосно средств"));
     }
-    let update = { balance: `${user.balance - price}.00000000` };
+    let update = { balance: parseInt(user.balance) - parseInt(price) };
     await User.update(update, { where: { id: user.id } });
     let checkMatrixTable = await Matrix_TableSecond.findOne({
       where: { userId: user.id, typeMatrixSecondId: matrix_id },

@@ -31,7 +31,7 @@ const giftReferalUser = async (referalId, summ) => {
     });
     if (checkMatrixReferal) {
         const referalUser = await User.findOne({ where: { id: referalId } });
-        let updateBalance = { balance: referalUser.balance + summ };
+        let updateBalance = { balance: parseInt(referalUser.balance) + parseInt(summ) };
         await User.update(updateBalance, { where: { id: referalId } });
     }
 };
@@ -82,67 +82,67 @@ const marketingGift = async (parentId, type_matrix_id) => {
     switch (type_matrix_id) {
         case 1:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 500}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt('500')};
             await User.update(updateBalance, { where: { id: user.id } });
             break;
         case 2:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 1000}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt('1000') };
             await User.update(updateBalance, { where: { id: user.id } });
             break;
         case 3:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 1500}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt('1500') };
             await User.update(updateBalance, { where: { id: user.id } });
             break;
         case 4:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 2000}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt( '2000') };
             await User.update(updateBalance, { where: { id: user.id } });
             break;
         case 5:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 2500}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt( '2500') };
             await User.update(updateBalance, { where: { id: user.id } });
             break;
         case 6:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 3500}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt('3500')};
             await User.update(updateBalance, { where: { id: user.id } });
             break;
         case 7:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 3500}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt( '3500') };
             await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, 100);
+            await giftReferalUser(user.referal_id, parseInt('100'));
             break;
         case 8:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 4000}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt( '4000') };
             await User.update(updateBalance, { where: { id: user.id } });
             break;
         case 9:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 4500}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt('4500') };
             await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, 1000);
+            await giftReferalUser(user.referal_id, parseInt('1000'));
             break;
         case 10:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 5000}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt( '5000') };
             await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, 2000);
+            await giftReferalUser(user.referal_id, parseInt('2000'));
             break;
         case 11:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: `${user.balance + 5500}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt( '5500') };
             await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, 7000);
+            await giftReferalUser(user.referal_id, parseInt('7000'));
             break;
         case 12:
-            updateBalance = { balance: `${user.balance + 6000}.00000000` };
+            updateBalance = { balance: parseInt(user.balance) + parseInt( '6000') };
             await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, 20000);
+            await giftReferalUser(user.referal_id, parseInt('20000'));
             break;
 
         default:
@@ -195,10 +195,10 @@ class MiniControllers {
         const price = (await TypeMatrixFour.findOne({ where: { id: matrix_id } }))
             .summ;
         const user = await User.findOne({ where: { username } });
-        if (+user.balance < price) {
+        if (+parseInt(user.balance) < parseInt(price)) {
             return next(ApiError.badRequest("Недостатосно средств"));
         }
-        let update = { balance: `${user.balance - price}.00000000` };
+        let update = { balance: parseInt(user.balance) - parseInt(  price)};
         await User.update(update, { where: { id: user.id } });
         let checkMatrixTable = await Matrix_TableFour.findOne({
             where: { userId: user.id, typeMatrixFourId: matrix_id },
