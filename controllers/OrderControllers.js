@@ -69,10 +69,10 @@ class OrderControllers {
       const filteredOrdersSells = findDublicatePrice(orderSell).sort((a, b)=>{return a.price - b.price})
       let result = {asks:[], bids:[], "isFrozen": "0", "postOnly": "0", "seq": 4878868}
       filteredOrdersSells.map((i)=>{
-        result.asks.push([`${(i.price).toFixed(8)}`, `${i.amount.toFixed(8)}`, `${i.summ.toFixed(8)}`])
+        result.asks.push([parseInt(i.price), parseInt(i.amount), parseInt(i.summ)])
       })
       filteredOrdersSales.map((i)=>{
-        result.bids.push([`${i.price.toFixed(8)}`, `${i.amount.toFixed(8)}`, `${i.summ.toFixed(8)}`])
+        result.bids.push([parseInt(i.price), parseInt(i.amount), parseInt(i.summ)])
       })
       return res.json(result)
     }
