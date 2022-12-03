@@ -31,7 +31,7 @@ module.exports = async (orders, amount, orderType, userId, marketId, allCom, all
             const totalAmount = await HistoryBargain.findAll({
                 attributes: [
                     'tradeID',
-                  [fn('sum', col('total')), 'total_amount'],
+                  [fn('sum', col('rate')), 'total_amount'],
                 ],
                 group: ['tradeID'],
                 raw: true, where:{tradeID:marketId, date:{[Op.gte]: new Date(new Date() - 24 * 60 * 60 * 1000)} }
@@ -77,7 +77,7 @@ module.exports = async (orders, amount, orderType, userId, marketId, allCom, all
             const totalAmount = await HistoryBargain.findAll({
                 attributes: [
                     'tradeID',
-                  [fn('sum', col('total')), 'total_amount'],
+                  [fn('sum', col('rate')), 'total_amount'],
                 ],
                 group: ['tradeID'],
                 raw: true, where:{tradeID:marketId, date:{[Op.gte]: new Date(new Date() - 24 * 60 * 60 * 1000)} }

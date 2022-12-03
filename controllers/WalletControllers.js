@@ -116,11 +116,6 @@ class WalletControllers {
       const secretKey = "0Lve8A9AzmKqeXne";
       const orderId = user.username;
       const currency = "RUB";
-      const callbackUrls = {
-          success_url: "https://kosmos_project/api/wallet/success",
-          fail_url: "https://kosmos_project/api/wallet/error",
-          status_url: "https://kosmos_project/api/wallet/warning",
-      };
       const description =
           "0J7Qv9C70LDRgtCwINCyINC80LDQs9Cw0LfQuNC90LUg0JrQvtGB0LzQvtGB";
       const hash = [shopId, orderId, amount, currency, description];
@@ -145,8 +140,6 @@ class WalletControllers {
         let { MERCHANT_ORDER_ID, AMOUNT } = req.body;
         AMOUNT = +AMOUNT;
         let update = {};
-        console.log(MERCHANT_ORDER_ID && AMOUNT);
-        console.log(MERCHANT_ORDER_ID, AMOUNT);
         if (MERCHANT_ORDER_ID && AMOUNT) {
             const user = await User.findOne({
                 where: { username: MERCHANT_ORDER_ID },
@@ -160,35 +153,41 @@ class WalletControllers {
         return res.redirect(url);
     }
   async redirectAndpyer(req, res, next) {
-        const {m_orderid, m_amount} = req.query
-      console.log(m_orderid && m_amount);
-      console.log(m_orderid, m_amount);
-      let update = {};
-      if (m_orderid && m_amount){
-          const user = await User.findOne({where:{username: m_orderid},
-          });
-          if (m_amount){
-              update = {balance: parseInt(user.balance)+ parseInt(m_amount)}
-          }
-          await User.update(update, {where: { username: m_orderid }})
-      }
     const url = "https://kosmoss.host/leader";
     return res.redirect(url);
   }
-    async reditAndpyer(req, res, next) {
-        const {m_orderid, m_amount} = req.query
-        console.log(m_orderid && m_amount);
-        console.log(m_orderid, m_amount);
+    async reditAndpyer(req, res) {
+        const {m_orderid, m_amount, m_operation_id,m_operation_ps,m_operation_date,m_operation_pay_date, m_curr,m_desc,m_status,m_shop} = req.query
+        const secretKey = "0Lve8A9AzmKqeXne";
+        const hash = [m_shop, m_orderid, m_amount, m_curr, m_desc];
+        hash.push(secretKey);
+        const sign = sha256(hash.join(":")).toUpperCase();
+        const queryParams = {
+            m_shop: m_shop,
+            m_orderid: m_orderid,
+            m_amount: m_amount,
+            m_operation_id:m_operation_id,
+            m_operation_ps:m_operation_ps,
+            m_operation_date:m_operation_date,
+            m_operation_pay_date:m_operation_pay_date,
+            m_curr: m_curr,
+            m_desc: m_desc,
+            m_status:m_status,
+            m_sign: sign,
+            m_process: "send",
+        };
         let update = {};
         if (m_orderid && m_amount){
             const user = await User.findOne({where:{username: m_orderid},
             });
             if (m_amount){
-                update = {balance: user.balance +m_amount}
+                update = {balance: parseInt(user.balance) + parseInt(m_amount)}
             }
             await User.update(update, {where: { username: m_orderid }})
+            return res.json({m_orderid:queryParams.m_orderid, m_status});
+        }else if (!m_orderid){
+            return res.json({m_orderid:queryParams.m_orderid, m_status:'Error'})
         }
-        return res.json(m_orderid);
     }
 
     async redirect(req, res, next) {

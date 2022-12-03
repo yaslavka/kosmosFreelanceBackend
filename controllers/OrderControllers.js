@@ -43,7 +43,7 @@ class OrderControllers {
         return await OrderClose(orderCheck, amount, orderType, user.id, market.id, allCom, all, price)
       }
       const item = await OrderSale.create({
-          amount, price, marketId:market.id, userId:user.id, summ:allCom, sumWithOutCom:all
+          amount, price, marketId:market.id, userId:user.id, summ:all, sumWithOutCom:allCom
       }) 
       return res.json(item)
     }
@@ -53,7 +53,7 @@ class OrderControllers {
         return await OrderClose(orderCheck, amount, orderType, user.id, market.id, allCom, all, price)
       }
         const item = await OrderSell.create({
-            amount, price, marketId:market.id, userId:user.id, summ:allCom, sumWithOutCom:all
+            amount, price, marketId:market.id, userId:user.id, summ:all, sumWithOutCom:all
         }) 
         return res.json(item)
     }
@@ -69,10 +69,10 @@ class OrderControllers {
       const filteredOrdersSells = findDublicatePrice(orderSell).sort((a, b)=>{return a.price - b.price})
       let result = {asks:[], bids:[], "isFrozen": "0", "postOnly": "0", "seq": 4878868}
       filteredOrdersSells.map((i)=>{
-        result.asks.push([parseInt(i.price), parseInt(i.amount), parseInt(i.summ)])
+        result.asks.push([i.price, i.amount, i.summ])
       })
       filteredOrdersSales.map((i)=>{
-        result.bids.push([parseInt(i.price), parseInt(i.amount), parseInt(i.summ)])
+        result.bids.push([i.price, i.amount, i.summ])
       })
       return res.json(result)
     }
