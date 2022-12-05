@@ -9,16 +9,16 @@ const Market = sequelize.define("market", {
       autoIncrement: true 
     },
     pair: { type: DataTypes.STRING, allowNull: false },
-    last: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
-    lowestAsk: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
-    highestBid: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
-    percentChange: { type: DataTypes.FLOAT, defaultValue: null },
-    baseVolume: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
-    quoteVolume: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
-    isFrozen: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
-    postOnly: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
-    high24hr: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
-    low24hr: { type: DataTypes.DECIMAL(61,8), defaultValue: null },
+    last: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    lowestAsk: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    highestBid: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    percentChange: { type: DataTypes.FLOAT, defaultValue: 0.00000000 },
+    baseVolume: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000},
+    quoteVolume: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    isFrozen: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    postOnly: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    high24hr: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    low24hr: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
   });
 
 

@@ -1,13 +1,13 @@
 const ApiError = require("../error/ApiError");
 const jwt_decode = require("jwt-decode");
-const { testnet, mainnet } = require("bitcore-lib/lib/networks");
+const { mainnet } = require("bitcore-lib/lib/networks");
 const { Op } = require("sequelize");
 const { createHDWallet, sendBitcoin, getBalanceBTC } = require("../service/walletCrypto");
 const { BalanceCrypto } = require("../models/TablesExchange/tableBalanceCrypto");
 
 const {
-    User
-  } = require("../models/models");
+  User
+} = require("../models/models");
 const { Wallet } = require("../models/TablesExchange/tableWallet");
 
 BalanceCrypto

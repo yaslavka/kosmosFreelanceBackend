@@ -1,13 +1,7 @@
-const ApiError = require("../error/ApiError");
-const jwt_decode = require("jwt-decode");
-
-// const {
-
-// } = require("../models/models");
 const { Market } = require("../models/TablesExchange/tableMarket");
 
 class MarketControllers {
-  async list(req, res, next) {
+  async list(req, res) {
     const markets = await Market.findAll();
     markets.map((i) => {
       let [market, coin] = i.pair.split('_')

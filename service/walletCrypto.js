@@ -1,4 +1,4 @@
-const { testnet, mainnet } = require("bitcore-lib/lib/networks");
+const {  mainnet } = require("bitcore-lib/lib/networks");
 const Mnemonic = require("bitcore-mnemonic");
 const axios = require('axios')
 const { PrivateKey } = require("bitcore-lib");

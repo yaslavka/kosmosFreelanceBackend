@@ -31,7 +31,7 @@ class WalletControllers {
         updateMinus = { balance: parseInt(user.balance) - parseInt(amount) };
         await User.update(updateMinus, {where:{id:user.id}})
         const item = await Winthdraw.create({
-            amount, system, wallet
+            amount, system, wallet, userId:user.id
         })
         return res.json(item);
     }

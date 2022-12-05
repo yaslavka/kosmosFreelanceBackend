@@ -10,11 +10,11 @@ const HistoryBargain = sequelize.define("history-bargain", {
     tradeID: { type: DataTypes.BIGINT,defaultValue:null  },
     date: { type: DataTypes.DATE, defaultValue:null },
     type: { type: DataTypes.STRING, defaultValue:null },
-    rate: { type: DataTypes.DECIMAL(61,8), defaultValue:null },
-    amount: { type: DataTypes.DECIMAL(61,8), defaultValue:null },
-    price: { type: DataTypes.DECIMAL(61,8), defaultValue:null },
-    total: { type: DataTypes.DECIMAL(61,8), defaultValue:null },
-    totalWithCom: { type: DataTypes.DECIMAL(61,8), defaultValue:null },
+    rate: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    amount: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    price: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    total: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
+    totalWithCom: { type: DataTypes.DECIMAL(61,8), defaultValue: 0.00000000 },
   });
 
   User.hasMany(HistoryBargain, { as: "history-bargain" });

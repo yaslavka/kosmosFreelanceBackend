@@ -18,7 +18,6 @@ const ca = fs.readFileSync(
 const express = require("express"); 
 const sequelize = require("./db");
 const models = require("./models/models");
-const PORT = process.env.PORT || 5000;
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const router = require("./routes/index");
@@ -28,13 +27,12 @@ const app = express();
 const { Op } = require("sequelize");
 const createFakeMatrices = require("./service/createFakeMatrices");
 const createFakeMatrice = require("./service/createFakeMatrice");
-const { Market } = require("./models/TablesExchange/tableMarket");
+const socketStart = require("./service/socketStart");
+const { sochetStartChart } = require("./service/orderClose");
 const { Coin } = require("./models/TablesExchange/tableCoin");
 const coinConst = require("./utils/coinConst");
 const exchangeParser = require("./service/exchangeParser");
-const exchangeBot = require("./service/exchangeBot");
-const { ChatTable } = require("./models/chatTable");
-const { createHDWallet, sendBitcoin, getBalanceBTC } = require("./service/walletCrypto");
+
 
 const credentials = {
   key: privateKey,
@@ -51,13 +49,8 @@ app.use("/api", router);
 app.use(ErrorHandlingMiddleware);
 const server = http.createServer(app);
 const serve = https.createServer(credentials, app);
-const io = new Server(serve, {
-  cors: {
-    origin: "https://kosmoss.host",
-    //origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
-});
+require('./service/io.js').init(serve);
+const io = require('./service/io.js').get();
 
 
 
@@ -146,9 +139,8 @@ const start = async () => {
   try {
     await sequelize.authenticate();
     await sequelize.sync();
-    server.listen(5000, () => console.log(`server started on port 5000`));
+    server.listen(80, () => console.log(`server started on port 80`));
     serve.listen(443, () => console.log(`server started on port 443`));
-    // app.listen(PORT, ()=> console.log(`server started on port ${PORT}`))
     const typeMatrixSecondCount = await models.TypeMatrixSecond.count()
     const typeMatrixThirdCount = await models.TypeMatrixThird.count()
     if (typeMatrixSecondCount === 0) {
@@ -189,54 +181,25 @@ const start = async () => {
         type:sequelize.QueryTypes.INSERT
       })
     }
-    // const marketCount = await Market.count()
-    // if (marketCount === 0){
-    //   await exchangeParser()
-    // }
-
     setInterval(writeOffMatrixTableCount, 2 * 60 * 60 * 1000);
     // setInterval(async ()=>{exchangeParser('all')}, 6 * 60 * 60 * 1000);
-    // while (true) {
-    //   await exchangeParser('top')
-    // }
 
     // walletBtc() 
     io.on("connection", async(socket) => {
+      try {
+        await socketStart(socket)
+        await sochetStartChart(socket)
+      } catch (error) {
+        console.log(error);
+      }
 
-      socket.on("join_room", (data) => {
-        socket.join(data);
-      });
-
-      const allMessage = await ChatTable.findAll({include: {model: models.User ,as: "user"}})
-      socket.on("join_room", (data) => {
-        socket.join(data);
-        socket.emit("getOldMessage", allMessage);
-      });
-      
-      socket.on("send_message", async (data) => {
-        socket.to(data.room).emit("receive_message", data);
-        const item = await ChatTable.create({
-          time: data.time, 
-          message: data.message,
-          author: data.author,
-          userId:data.userId
-        })
-      });
-    
-      socket.on("disconnect", () => {
-        console.log("User Disconnected", socket.id);
-      }); 
     });
-
-    //const send = await getBalanceBTC('mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB')
-    // const send = await sendBitcoin('mv4rnyY3Su5gjcDNzbMLKBQkBicCtHUtFB', 0.01380908)
-    //console.log(send);
   } catch (error) {
     console.log(error);  
   }
-  // while (true) {
-  //   await exchangeParser('top')
-  // }
+  while (true) {
+    await exchangeParser('top')
+  }
 };
 
 start();
