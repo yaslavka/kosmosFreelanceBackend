@@ -49,6 +49,8 @@ class OrderControllers {
           userId:user.id,
           walletId:firstCoinWalletId.id
         })
+      } else {
+        return next(ApiError.badRequest("Создайте BTC кошелек"));
       }
     }
     if (!secondCoinWallet){
@@ -57,6 +59,8 @@ class OrderControllers {
           userId:user.id,
           walletId:secondCoinWalletId.id
         })
+      } else {
+        return next(ApiError.badRequest("Создайте BTC кошелек"));
       }
     }
     const market = await Market.findOne({where:{pair}})
@@ -64,14 +68,14 @@ class OrderControllers {
       if (firstCoinWallet.balance < allCom){
         return next(ApiError.badRequest("Недостаточно средств"));
       }
-      let updateWalletBalance = {balance:firstCoinWallet.balance - (+allCom), unconfirmed_balance:firstCoinWallet.unconfirmed_balance + (+allCom)}
+      let updateWalletBalance = {balance:(+firstCoinWallet.balance) - (+allCom), unconfirmed_balance:(+firstCoinWallet.unconfirmed_balance) + (+allCom)}
       await BalanceCrypto.update(updateWalletBalance, {where:{id:firstCoinWallet.id}})
       const orderCheck = await OrderSell.findAll({where:{marketId:market.id, price: { [Op.lte]: price }}})
       if (orderCheck.length > 0){
         return await OrderClose(orderCheck, amount, orderType, user.id, market.id, allCom, all, price)
       }
       const item = await OrderSale.create({
-        amount, price, marketId:market.id, userId:user.id, summ:all, sumWithOutCom:allCom
+        amount, price, marketId:market.id, userId:user.id, summ:allCom, sumWithOutCom:all
       })
       return res.json(item)
     }
@@ -79,14 +83,14 @@ class OrderControllers {
       if (secondCoinWallet.balance < amount){
         return next(ApiError.badRequest("Недостаточно средств"));
       }
-      let updateWalletBalance = {balance:secondCoinWallet.balance - (+amount), unconfirmed_balance:secondCoinWallet.unconfirmed_balance + (+amount)}
+      let updateWalletBalance = {balance:(+secondCoinWallet.balance) - (+amount), unconfirmed_balance:(+secondCoinWallet.unconfirmed_balance) + (+amount)}
       await BalanceCrypto.update(updateWalletBalance, {where:{id:secondCoinWallet.id}})
       const orderCheck = await OrderSale.findAll({where:{marketId:market.id, price: { [Op.gte]: price }}})
       if (orderCheck.length > 0){
         return await OrderClose(orderCheck, amount, orderType, user.id, market.id, allCom, all, price)
       }
       const item = await OrderSell.create({
-        amount, price, marketId:market.id, userId:user.id, summ:all, sumWithOutCom:allCom
+        amount, price, marketId:market.id, userId:user.id, summ:allCom, sumWithOutCom:all
       })
       return res.json(item)
     }

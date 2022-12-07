@@ -5,6 +5,8 @@ const {findParentId} = require('../service/findParentId')
 const {checkCountParentId} = require('../service/checkCountParentId')
 const marketingGift = require('../service/marketingGift')
 const marketingCheckCount = require('../service/marketingCheckCount')
+const {BalanceCrypto} = require("../models/TablesExchange/tableBalanceCrypto");
+const {Wallet} = require("../models/TablesExchange/tableWallet");
 
 const {
   CloneStatSecond,
@@ -198,11 +200,22 @@ class MatrixController {
     const price = (await TypeMatrixSecond.findOne({ where: { id: matrix_id } }))
       .summ;
     const user = await User.findOne({ where: { username } });
-    if (+parseInt(user.balance) < parseInt(price)) {
+    const walletRUBId = await Wallet.findOne({where:{name: 'RUR'}})
+    const walletRUBBalance = await BalanceCrypto.findOne({
+      where: {
+        userId: user.id,
+        walletId: walletRUBId.id
+      }
+    })
+    if ((+walletRUBBalance.balance < price) && (user.locale < price)) {
       return next(ApiError.badRequest("Недостатосно средств"));
+    } else if (+walletRUBBalance.balance >= price){
+      let update = { balance: (+walletRUBBalance.balance) - (+price) };
+      await BalanceCrypto.update(update, { where: { id: walletRUBBalance.id } });
+    } else {
+      let update = { locale: (+user.locale) - (+price)} ;
+      await User.update(update, { where: { id: user.id } });
     }
-    let update = { balance: parseInt(user.balance) - parseInt(price) };
-    await User.update(update, { where: { id: user.id } });
     let checkMatrixTable = await Matrix_TableSecond.findOne({
       where: { userId: user.id, typeMatrixSecondId: matrix_id },
     });

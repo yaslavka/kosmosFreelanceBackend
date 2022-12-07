@@ -2,6 +2,8 @@ const ApiError = require("../error/ApiError");
 const jwt_decode = require("jwt-decode");
 const freekassa = require("freekassa-node");
 const bcrypt = require("bcrypt");
+const {BalanceCrypto} = require("../models/TablesExchange/tableBalanceCrypto");
+const {Wallet} = require("../models/TablesExchange/tableWallet");
 const { stringify } = require("querystring");
 var sha256 = require("js-sha256").sha256;
 
@@ -144,10 +146,17 @@ class WalletControllers {
             const user = await User.findOne({
                 where: { username: MERCHANT_ORDER_ID },
             });
+            const walletRUBId = await Wallet.findOne({where:{name: 'RUR'}})
+            const walletRUBBalance = await BalanceCrypto.findOne({
+                where: {
+                    userId: user.id,
+                    walletId: walletRUBId.id
+                }
+            })
             if (AMOUNT){
-                update = {balance: parseInt(user.balance)+ parseInt(AMOUNT)}
+                update = {balance: (+walletRUBBalance.balance)+ (+AMOUNT)}
             }
-            await User.update(update, { where: { username: MERCHANT_ORDER_ID } });
+            await BalanceCrypto.update(update, { where: { id: walletRUBBalance.id } });
         }
         const url = "https://kosmoss.host/leader";
         return res.redirect(url);

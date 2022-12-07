@@ -6,6 +6,8 @@ const findParentId = require('../service/findParentId')
 const checkCountParentId = require('../service/checkCountParentId')
 const marketingCheckCount = require('../service/marketingCheckCount')
 const marketingGift = require('../service/marketingGift')
+const {BalanceCrypto} = require("../models/TablesExchange/tableBalanceCrypto");
+const {Wallet} = require("../models/TablesExchange/tableWallet");
 
 const {
     User,
@@ -25,8 +27,15 @@ const updateOrCreate = async function (model, where, newItem) {
 }
 
 const remunerationUser = async(user, summ)=>{
-    let updateBalance = { balance: (+parseInt(user.balance)) + parseInt(summ) };
-    await User.update(updateBalance, { where: { id: user.id } });
+    const walletRUBId = await Wallet.findOne({ where: { name: 'RUR' } })
+    const walletRUBBalance = await BalanceCrypto.findOne({
+        where: {
+            userId: user.id,
+            walletId: walletRUBId.id
+        }
+    })
+    let updateBalance = { balance: (+walletRUBBalance.balance) + summ };
+    await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
     const statisticData = await Statistics.findOne({where:{userId:user.id}})
     let updateStatisticInventory = {myInviterIncome:statisticData.myInviterIncome + summ}
     await Statistics.update(updateStatisticInventory, {where:{id:statisticData.id}})
@@ -35,8 +44,15 @@ const remunerationReferal = async(user, summ)=>{
     const referalMatrix = await Matrix_TableSix.findOne({where:{userId:user.referal_id}})
     if (referalMatrix){
         const referalUser = await User.findOne({where:{id:user.referal_id}})
-        let updateReferalBalance = { balance: (+parseInt(referalUser.balance)) + parseInt(summ) };
-        await User.update(updateReferalBalance, { where: { id: user.referal_id } });
+        const walletRUBId = await Wallet.findOne({ where: { name: 'RUR' } })
+        const walletRUBBalance = await BalanceCrypto.findOne({
+            where: {
+                userId: referalUser.id,
+                walletId: walletRUBId.id
+            }
+        })
+        let updateReferalBalance = { balance: (+walletRUBBalance.balance) + summ };
+        await BalanceCrypto.update(updateReferalBalance, { where: { id: walletRUBBalance.id } });
     }
 }
 
@@ -336,12 +352,22 @@ class StarsControllers {
         const user = await User.findOne({
             where: { username: decodeToken.username },
         });
-        if (parseInt(user.balance) < parseInt('5000.00000000')) {
+        const walletRUBId = await Wallet.findOne({ where: { name: 'RUR' } })
+        const walletRUBBalance = await BalanceCrypto.findOne({
+            where: {
+                userId: user.id,
+                walletId: walletRUBId.id
+            }
+        })
+        if ((walletRUBBalance.balance < 5000) && (user.locale < 5000)) {
             return next(ApiError.badRequest("Недостаточно средств"));
+        } else if (walletRUBBalance.balance >= 5000) {
+            let update = { balance: (+ walletRUBBalance.balance) - 5000 }
+            let temp = await BalanceCrypto.update(update, { where: { id: walletRUBBalance.id } })
+        } else {
+            let update = { locale: (user.locale) - 5000 }
+            let temp = await User.update(update, { where: { id: user.id } })
         }
-        let update = { balance: ((+ parseInt(user.balance)) - parseInt('5000.00000000')) }
-
-        let temp = await User.update(update, { where: { username: decodeToken.username } })
         const level = 1;
         const matrixTemp = await MatrixSix.findAll({ include: { model: Matrix_TableSix, as: "matrix_table" } })
         const matrix = matrixTemp.filter((i, index) => {
@@ -419,12 +445,23 @@ class StarsControllers {
         const user = await User.findOne({
             where: { username: decodeToken.username },
         });
-        let summ = planets.length * parseInt('2160.00000000');
-        if (+(parseInt(user.balance)) < summ) {
+        let summ = planets.length * 5000;
+        const walletRUBId = await Wallet.findOne({ where: { name: 'RUR' } })
+        const walletRUBBalance = await BalanceCrypto.findOne({
+            where: {
+                userId: user.id,
+                walletId: walletRUBId.id
+            }
+        })
+        if ((walletRUBBalance.balance < summ) && (user.locale < summ)) {
             return next(ApiError.badRequest("Недостаточно средств"));
+        } else if (walletRUBBalance.balance >= summ){
+            let update = { balance: ((+ walletRUBBalance.balance) - summ) }
+            let temp = await BalanceCrypto.update(update, { where: { id: walletRUBBalance.id } })
+        } else {
+            let update = { locale: (user.locale - summ) }
+            let temp = await User.update(update, { where: { id: user.id } })
         }
-        let update = { balance: ((+ parseInt(user.balance)) - summ)}
-        let temp = await User.update(update, { where: { username: decodeToken.username } })
         planets.map(async (id) => {
             let matrix = await Matrix_TableSix.findOne({ where: id })
             let updatedMatrix = { count: (matrix.count + 5000) }

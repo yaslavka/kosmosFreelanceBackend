@@ -7,10 +7,19 @@ const {
     Matrix_TableSecond,
     MatrixSecond
 } = require("../models/models");
+const { BalanceCrypto } = require("../models/TablesExchange/tableBalanceCrypto");
+const { Wallet } = require("../models/TablesExchange/tableWallet");
 
 const remunerationUser = async(user, summ)=>{
-    let updateBalance = { balance: (+parseInt(user.balance)) + parseInt(summ)};
-    await User.update(updateBalance, { where: { id: user.id } });
+    const walletRUBId = await Wallet.findOne({ where: { name: 'RUR' } })
+    const walletRUBBalance = await BalanceCrypto.findOne({
+        where: {
+            userId: user.id,
+            walletId: walletRUBId.id
+        }
+    })
+    let updateBalance = { balance: (+walletRUBBalance.balance) + summ};
+    await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
     const statisticData = await Statistic.findOne({where:{userId:user.id}})
     let updateStatisticInventory = {myInviterIncome:statisticData.myInviterIncome + summ}
     await Statistic.update(updateStatisticInventory, {where:{id:statisticData.id}})
@@ -19,8 +28,15 @@ const remunerationReferal = async(user, summ)=>{
     const referalMatrix = await Matrix_Table.findOne({where:{userId:user.referal_id}})
     if (referalMatrix){
         const referalUser = await User.findOne({where:{id:user.referal_id}})
-        let updateReferalBalance = { balance: (+parseInt(referalUser.balance)) + parseInt(summ)};
-        await User.update(updateReferalBalance, { where: { id: user.referal_id } });
+        const walletRUBId = await Wallet.findOne({ where: { name: 'RUR' } })
+        const walletRUBBalance = await BalanceCrypto.findOne({
+            where: {
+                userId: referalUser.id,
+                walletId: walletRUBId.id
+            }
+        })
+        let updateBalance = { balance: (+walletRUBBalance.balance) + summ};
+        await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
     }
 }
 
@@ -52,7 +68,7 @@ const giftMatrixMilkyWay = async(user, count)=>{
         let newItem = { all_comet: allComet, all_planet: allPlanet, first_planet: 0, my_comet: myComet, my_planet, structure_planet: 0, userId: user.id }
         await updateOrCreate(Statistic, { userId: user.id }, newItem)
         await checkForLevel(parentId, 1)
-        await updateStatistic(allComet, allPlanet)  
+        await updateStatistic(allComet, allPlanet)
     }
 }
 
@@ -60,7 +76,7 @@ const giftInvest = async(user, summ)=>{
     const investBoxItem = await InvestBox.create({
         status:'активный',
         userId:user.id,
-        summ:parseInt(summ)
+        summ:summ
     })
 }
 
@@ -73,48 +89,48 @@ const giftPegas = async(user, count)=>{
         const referalId = user.referal_id;
         let parentIdPegas, side_matrix;
         const parentIdForCheck = await findParentId(
-          1,
-          referalId,
-          user.id
+            1,
+            referalId,
+            user.id
         );
         if (parentIdForCheck) {
-          const resultFuncCheckCountParentId = await checkCountParentId(
-            parentIdForCheck,
-            user.id,
-            1
-          );
-          parentIdPegas = resultFuncCheckCountParentId.parentId;
-          side_matrix = resultFuncCheckCountParentId.side_matrix;
+            const resultFuncCheckCountParentId = await checkCountParentId(
+                parentIdForCheck,
+                user.id,
+                1
+            );
+            parentIdPegas = resultFuncCheckCountParentId.parentId;
+            side_matrix = resultFuncCheckCountParentId.side_matrix;
         } else {
-          parentIdPegas = null;
-          side_matrix = null;
+            parentIdPegas = null;
+            side_matrix = null;
         }
-  
+
         const matrixItem = await MatrixSecond.create({
-          date: new Date(),
-          parent_id: parentIdPegas,
-          userId: user.id,
-          side_matrix,
+            date: new Date(),
+            parent_id: parentIdPegas,
+            userId: user.id,
+            side_matrix,
         });
-  
+
         const matrixTableItem = await Matrix_TableSecond.create({
-          matrixSecondId: matrixItem.id,
-          typeMatrixSecondId: 1,
-          userId: user.id,
-          count: (count - 1), 
+            matrixSecondId: matrixItem.id,
+            typeMatrixSecondId: 1,
+            userId: user.id,
+            count: (count - 1),
         });
         const marketingCheck = await marketingCheckCount(parentIdPegas);
         let marketingGiftResult = [];
         if (marketingCheck.length > 0) {
-          marketingCheck.map(async (i) => {
-            if (i.count) {
-              marketingGiftResult.push(await marketingGift(
-                i.count,
-                i.parentId,
-                1
-              ));
-            }
-          })
+            marketingCheck.map(async (i) => {
+                if (i.count) {
+                    marketingGiftResult.push(await marketingGift(
+                        i.count,
+                        i.parentId,
+                        1
+                    ));
+                }
+            })
         }
     }
 }
@@ -242,7 +258,7 @@ module.exports = async function (level, matrixTableData){
             //klon m1
             await giftPegas(user, 28)
             break;
-    
+
         default:
             break;
     }

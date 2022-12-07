@@ -29,8 +29,8 @@ const transactionCryptoSale = async (
 ) => {
 
     const [firstCoin, secondCoin] = pair.split("_");
-    let total = (+parseInt(amount) * parseInt(price));
-    let com = (+ total * parseInt('0.002'));
+    let total = ((+amount) * (+price));
+    let com = (+ total * 0.002);
     const firstWalletId = (await Wallet.findOne({where:{name:firstCoin}})).id
     const secondWalletId = (await Wallet.findOne({where:{name:secondCoin}})).id
 
@@ -80,48 +80,44 @@ const transactionCryptoSale = async (
     if (orderType === 'buy'){
         let updateFirstCoinWalletFirstUser = {
             unconfirmed_balance:
-                parseInt(firstCoinWalletFirstUser.unconfirmed_balance) - (total + com),
+                (+firstCoinWalletFirstUser.unconfirmed_balance) - (total + com),
         };
-        console.log(firstCoinWalletFirstUser.unconfirmed_balance);
-        console.log(total);
-        console.log(com);
-        console.log(total + com);
+
         await BalanceCrypto.update(updateFirstCoinWalletFirstUser, {
             where: { id: firstCoinWalletFirstUser.id },
         });
         let updateSecondCoinWalletFirstUser = {
-            balance: parseInt(secondCoinWalletFirstUser.balance) + (+parseInt(amount)),
+            balance: (+secondCoinWalletFirstUser.balance) + (+amount),
         };
         await BalanceCrypto.update(updateSecondCoinWalletFirstUser, {
             where: { id: secondCoinWalletFirstUser.id },
         });
-        let updatefirstCoinWalletSecondUser = {balance:parseInt(firstCoinWalletSecondUser.balance) + (total - com)}
+        let updatefirstCoinWalletSecondUser = {balance:(+firstCoinWalletSecondUser.balance) + (total - com)}
         await BalanceCrypto.update(updatefirstCoinWalletSecondUser, {
             where: { id: firstCoinWalletSecondUser.id },
         });
-        let updateSecondCoinWalletSecondUser = {balance:parseInt(secondCoinWalletSecondUser.balance) - (+parseInt(amount))};
+        let updateSecondCoinWalletSecondUser = {balance:(+secondCoinWalletSecondUser.balance) - (+amount)};
         await BalanceCrypto.update(updateSecondCoinWalletSecondUser, {
             where: { id: secondCoinWalletSecondUser.id },
         });
     } else {
         let updateFirstCoinWalletFirstUser = {
-            balance:
-                parseInt(firstCoinWalletFirstUser.balance) + (total - com),
+            balance: (+firstCoinWalletFirstUser.balance) + (total - com),
         };
         await BalanceCrypto.update(updateFirstCoinWalletFirstUser, {
             where: { id: firstCoinWalletFirstUser.id },
         });
         let updateSecondCoinWalletFirstUser = {
-            balance: parseInt(secondCoinWalletFirstUser.balance) - (+parseInt(amount)),
+            balance: (+secondCoinWalletFirstUser.balance) - (+amount),
         };
         await BalanceCrypto.update(updateSecondCoinWalletFirstUser, {
             where: { id: secondCoinWalletFirstUser.id },
         });
-        let updatefirstCoinWalletSecondUser = {unconfirmed_balance:parseInt(firstCoinWalletSecondUser.unconfirmed_balance) - (total + com)}
+        let updatefirstCoinWalletSecondUser = {unconfirmed_balance:(+firstCoinWalletSecondUser.unconfirmed_balance) - (total + com)}
         await BalanceCrypto.update(updatefirstCoinWalletSecondUser, {
             where: { id: firstCoinWalletSecondUser.id },
         });
-        let updateSecondCoinWalletSecondUser = {balance:parseInt(secondCoinWalletSecondUser.balance) + (+parseInt(amount))};
+        let updateSecondCoinWalletSecondUser = {balance:(+secondCoinWalletSecondUser.balance) + (+amount)};
         await BalanceCrypto.update(updateSecondCoinWalletSecondUser, {
             where: { id: secondCoinWalletSecondUser.id },
         });
@@ -192,7 +188,7 @@ const OrderClose = async (
     let amountTemp = amount;
     for (let i = 0; i < orders.length; i++) {
         const element = orders[i];
-        if (+parseInt(amountTemp) >= +parseInt(element.amount) && +parseInt(amountTemp) > 0) {
+        if ((+amountTemp) >= (+element.amount) && (+amountTemp) > 0) {
             //History
             if (orderType !== "buy") {
                 await transactionCryptoSale(element.userId, userId, element.amount, element.price, all, 'buy', pairName.pair)
@@ -295,11 +291,11 @@ const OrderClose = async (
                     await sochetStartChart(socket, true, pairName.pair);
                 });
                 let update = {
-                    amount: (+parseInt(element.amount )- +parseInt(amountTemp)),
+                    amount: (+element.amount )- (+amountTemp),
                     summ:
-                        (+parseInt(element.amount ) - parseInt(amountTemp)) * +parseInt(element.price) * parseInt('0.98'),
+                        ((+element.amount ) - (+amountTemp)) * (+element.price) * 0.98,
                     sumWithOutCom:
-                        (+parseInt(element.amount ) - parseInt(amountTemp)) * +parseInt(element.price),
+                        ((+element.amount ) - (+amountTemp)) * (+element.price),
                 };
                 await OrderSale.update(update, { where: { id: element.id } });
             } else {
@@ -320,11 +316,11 @@ const OrderClose = async (
                     await sochetStartChart(socket, true, pairName.pair);
                 });
                 let update = {
-                    amount: (+parseInt(element.amount) - +parseInt(amountTemp)),
+                    amount: ((+element.amount) - (+amountTemp)),
                     summ:
-                        (+parseInt(element.amount) - parseInt(amountTemp)) * +parseInt(element.price) * 1.02,
+                        ((+element.amount) - (+amountTemp)) * (+element.price) * 1.02,
                     sumWithOutCom:
-                        (+parseInt(element.amount) - parseInt(amountTemp)) * +parseInt(element.price),
+                        ((+element.amount) - (+amountTemp)) * (+element.price),
                 };
                 await OrderSell.update(update, { where: { id: element.id } });
             }
@@ -341,7 +337,7 @@ const OrderClose = async (
             const marketUpdate = {
                 high24hr: element.price,
                 baseVolume: totalAmount[0].total_amount,
-                percentChange: (element.price * 100) / marketForUpdate.high24hr,
+                percentChange: ((+element.price) * 100) / (+marketForUpdate.high24hr),
             };
             await Market.update(marketUpdate, { where: { id: marketId } });
             amountTemp = 0;

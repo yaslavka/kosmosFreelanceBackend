@@ -1,3 +1,5 @@
+const {Wallet} = require("../models/TablesExchange/tableWallet");
+const {BalanceCrypto} = require("../models/TablesExchange/tableBalanceCrypto");
 const {
     User,
     MatrixSix,
@@ -9,8 +11,15 @@ const {
 } = require("../models/models");
 
 const remunerationUser = async(user, summ)=>{
-    let updateBalance = { balance: (+parseInt(user.balance)) + parseInt(summ) };
-    await User.update(updateBalance, { where: { id: user.id } });
+    const walletRUBId = await Wallet.findOne({ where: { name: 'RUR' } })
+    const walletRUBBalance = await BalanceCrypto.findOne({
+        where: {
+            userId: user.id,
+            walletId: walletRUBId.id
+        }
+    })
+    let updateBalance = { balance: (+walletRUBBalance.balance) + summ};
+    await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
     const statisticData = await Statistics.findOne({where:{userId:user.id}})
     let updateStatisticInventory = {myInviterIncome:statisticData.myInviterIncome + summ}
     await Statistics.update(updateStatisticInventory, {where:{id:statisticData.id}})
@@ -19,8 +28,15 @@ const remunerationReferal = async(user, summ)=>{
     const referalMatrix = await Matrix_TableSix.findOne({where:{userId:user.referal_id}})
     if (referalMatrix){
         const referalUser = await User.findOne({where:{id:user.referal_id}})
-        let updateReferalBalance = { balance: (+parseInt(referalUser.balance)) + parseInt(summ) };
-        await User.update(updateReferalBalance, { where: { id: user.referal_id } });
+        const walletRUBId = await Wallet.findOne({ where: { name: 'RUR' } })
+        const walletRUBBalance = await BalanceCrypto.findOne({
+            where: {
+                userId: referalUser.id,
+                walletId: walletRUBId.id
+            }
+        })
+        let updateBalance = { balance: (+walletRUBBalance.balance) + summ};
+        await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
     }
 }
 

@@ -1,5 +1,7 @@
 const ApiError = require("../error/ApiError");
 const jwt_decode = require("jwt-decode");
+const {BalanceCrypto} = require("../models/TablesExchange/tableBalanceCrypto");
+const {Wallet} = require("../models/TablesExchange/tableWallet");
 const { findParentId } = require("../service/findParentIdPegasMini");
 const {
     checkCountParentId,
@@ -31,8 +33,15 @@ const giftReferalUser = async (referalId, summ) => {
     });
     if (checkMatrixReferal) {
         const referalUser = await User.findOne({ where: { id: referalId } });
-        let updateBalance = { balance: parseInt(referalUser.balance) + parseInt(summ) };
-        await User.update(updateBalance, { where: { id: referalId } });
+        const walletRUBId = await Wallet.findOne({where:{name: 'RUR'}})
+        const walletRUBBalance = await BalanceCrypto.findOne({
+            where: {
+                userId: referalUser.id,
+                walletId: walletRUBId.id
+            }
+        })
+        let updateBalance = { balance: (+walletRUBBalance.balance) + (+summ) };
+        await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
     }
 };
 
@@ -79,70 +88,77 @@ const marketingGift = async (parentId, type_matrix_id) => {
     });
     const user = await User.findOne({ where: { id: matrixItemThree.userId } });
     let updateBalance;
+    const walletRUBId = await Wallet.findOne({where:{name: 'RUR'}})
+    const walletRUBBalance = await BalanceCrypto.findOne({
+        where: {
+            userId: user.id,
+            walletId: walletRUBId.id
+        }
+    })
     switch (type_matrix_id) {
         case 1:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt('500')};
-            await User.update(updateBalance, { where: { id: user.id } });
+            updateBalance = { balance: (+walletRUBBalance.balance) + 500 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
             break;
         case 2:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt('1000') };
-            await User.update(updateBalance, { where: { id: user.id } });
+            updateBalance = { balance: (+walletRUBBalance.balance) + 1000 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
             break;
         case 3:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt('1500') };
-            await User.update(updateBalance, { where: { id: user.id } });
+            updateBalance = { balance: (+walletRUBBalance.balance) + 1500 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
             break;
         case 4:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt( '2000') };
-            await User.update(updateBalance, { where: { id: user.id } });
+            updateBalance = { balance: (+walletRUBBalance.balance) + 2000 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
             break;
         case 5:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt( '2500') };
-            await User.update(updateBalance, { where: { id: user.id } });
+            updateBalance = { balance: (+walletRUBBalance.balance) + 2500 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
             break;
         case 6:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt('3500')};
-            await User.update(updateBalance, { where: { id: user.id } });
+            updateBalance = { balance: (+walletRUBBalance.balance) + 3500 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
             break;
         case 7:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt( '3500') };
-            await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, parseInt('100'));
+            updateBalance = { balance: (+walletRUBBalance.balance) + 3500 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
+            await giftReferalUser(user.referal_id, 100);
             break;
         case 8:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt( '4000') };
-            await User.update(updateBalance, { where: { id: user.id } });
+            updateBalance = { balance: (+walletRUBBalance.balance) + 4000 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
             break;
         case 9:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt('4500') };
-            await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, parseInt('1000'));
+            updateBalance = { balance: (+walletRUBBalance.balance) + 4500 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
+            await giftReferalUser(user.referal_id, 1000);
             break;
         case 10:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt( '5000') };
-            await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, parseInt('2000'));
+            updateBalance = { balance: (+walletRUBBalance.balance) + 5000 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
+            await giftReferalUser(user.referal_id, 2000);
             break;
         case 11:
             await transitionToHighLevel(parentId, type_matrix_id, user);
-            updateBalance = { balance: parseInt(user.balance) + parseInt( '5500') };
-            await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, parseInt('7000'));
+            updateBalance = { balance: (+walletRUBBalance.balance) + 5500 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
+            await giftReferalUser(user.referal_id, 7000);
             break;
         case 12:
-            updateBalance = { balance: parseInt(user.balance) + parseInt( '6000') };
-            await User.update(updateBalance, { where: { id: user.id } });
-            await giftReferalUser(user.referal_id, parseInt('20000'));
+            updateBalance = { balance: (+walletRUBBalance.balance) + 6000 };
+            await BalanceCrypto.update(updateBalance, { where: { id: walletRUBBalance.id } });
+            await giftReferalUser(user.referal_id, 20000);
             break;
 
         default:
@@ -195,11 +211,22 @@ class MiniControllers {
         const price = (await TypeMatrixFour.findOne({ where: { id: matrix_id } }))
             .summ;
         const user = await User.findOne({ where: { username } });
-        if (+parseInt(user.balance) < parseInt(price)) {
+        const walletRUBId = await Wallet.findOne({where:{name: 'RUR'}})
+        const walletRUBBalance = await BalanceCrypto.findOne({
+            where: {
+                userId: user.id,
+                walletId: walletRUBId.id
+            }
+        })
+        if ((+walletRUBBalance.balance < price) && (user.locale < price)) {
             return next(ApiError.badRequest("Недостатосно средств"));
+        } else if (+walletRUBBalance.balance >= price){
+            let update = { balance: (+walletRUBBalance.balance) - (+price) };
+            await BalanceCrypto.update(update, { where: { id: walletRUBBalance.id } });
+        } else {
+            let update = { locale: (+user.locale) - (+price)} ;
+            await User.update(update, { where: { id: user.id } });
         }
-        let update = { balance: parseInt(user.balance) - parseInt(  price)};
-        await User.update(update, { where: { id: user.id } });
         let checkMatrixTable = await Matrix_TableFour.findOne({
             where: { userId: user.id, typeMatrixFourId: matrix_id },
         });

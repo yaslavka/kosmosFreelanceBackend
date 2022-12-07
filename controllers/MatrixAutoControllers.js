@@ -5,6 +5,8 @@ const {findParentId} = require('../service/findParentIdAuto')
 const {checkCountParentId} = require('../service/checkCountParentIdAuto')
 const marketingGift = require('../service/marketingGiftAuto')
 const marketingCheckCount = require('../service/marketingCheckCountAuto')
+const {BalanceCrypto} = require("../models/TablesExchange/tableBalanceCrypto");
+const {Wallet} = require("../models/TablesExchange/tableWallet");
 
 const {
   CloneStatFive,
@@ -196,11 +198,22 @@ class MatrixAutoController {
     const price = (await TypeMatrixFive.findOne({ where: { id: matrix_id } }))
       .summ;
     const user = await User.findOne({ where: { username } });
-    if (+user.balance < (+price)) {
+    const walletRUBId = await Wallet.findOne({where:{name: 'RUR'}})
+    const walletRUBBalance = await BalanceCrypto.findOne({
+      where: {
+        userId: user.id,
+        walletId: walletRUBId.id
+      }
+    })
+    if ((+walletRUBBalance.balance < price) && (user.locale < price)) {
       return next(ApiError.badRequest("Недостатосно средств"));
+    } else if (+walletRUBBalance.balance >= price){
+      let update = { balance: (+walletRUBBalance.balance) - (+price) };
+      await BalanceCrypto.update(update, { where: { id: walletRUBBalance.id } });
+    } else {
+      let update = { locale: (+user.locale) - (+price)} ;
+      await User.update(update, { where: { id: user.id } });
     }
-    let update = { balance: +user.balance - (+price) };
-    await User.update(update, { where: { id: user.id } });
     let checkMatrixTable = await Matrix_TableFive.findOne({
       where: { userId: user.id, typeMatrixFiveId: matrix_id },
     });
