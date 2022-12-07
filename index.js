@@ -197,9 +197,9 @@ const start = async () => {
   } catch (error) {
     console.log(error);  
   }
-  while (true) {
-    await exchangeParser('top')
-  }
+  // while (true) {
+  //   await exchangeParser('top')
+  // }
 };
 
 start();

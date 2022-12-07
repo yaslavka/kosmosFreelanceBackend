@@ -80,29 +80,29 @@ const transactionCryptoSale = async (
     if (orderType === 'buy'){
         let updateFirstCoinWalletFirstUser = {
             unconfirmed_balance:
-                (+firstCoinWalletFirstUser.unconfirmed_balance) - (total + com),
+                +firstCoinWalletFirstUser.unconfirmed_balance - (total + com),
         };
 
         await BalanceCrypto.update(updateFirstCoinWalletFirstUser, {
             where: { id: firstCoinWalletFirstUser.id },
         });
         let updateSecondCoinWalletFirstUser = {
-            balance: (+secondCoinWalletFirstUser.balance) + (+amount),
+            balance: +secondCoinWalletFirstUser.balance + (+amount),
         };
         await BalanceCrypto.update(updateSecondCoinWalletFirstUser, {
             where: { id: secondCoinWalletFirstUser.id },
         });
-        let updatefirstCoinWalletSecondUser = {balance:(+firstCoinWalletSecondUser.balance) + (total - com)}
+        let updatefirstCoinWalletSecondUser = {balance:+firstCoinWalletSecondUser.balance + (total - com)}
         await BalanceCrypto.update(updatefirstCoinWalletSecondUser, {
             where: { id: firstCoinWalletSecondUser.id },
         });
-        let updateSecondCoinWalletSecondUser = {balance:(+secondCoinWalletSecondUser.balance) - (+amount)};
+        let updateSecondCoinWalletSecondUser = {balance:+secondCoinWalletSecondUser.balance - (+amount)};
         await BalanceCrypto.update(updateSecondCoinWalletSecondUser, {
             where: { id: secondCoinWalletSecondUser.id },
         });
     } else {
         let updateFirstCoinWalletFirstUser = {
-            balance: (+firstCoinWalletFirstUser.balance) + (total - com),
+            balance: +firstCoinWalletFirstUser.balance + (total - com),
         };
         await BalanceCrypto.update(updateFirstCoinWalletFirstUser, {
             where: { id: firstCoinWalletFirstUser.id },
@@ -113,11 +113,11 @@ const transactionCryptoSale = async (
         await BalanceCrypto.update(updateSecondCoinWalletFirstUser, {
             where: { id: secondCoinWalletFirstUser.id },
         });
-        let updatefirstCoinWalletSecondUser = {unconfirmed_balance:(+firstCoinWalletSecondUser.unconfirmed_balance) - (total + com)}
+        let updatefirstCoinWalletSecondUser = {unconfirmed_balance:+firstCoinWalletSecondUser.unconfirmed_balance - (total + com)}
         await BalanceCrypto.update(updatefirstCoinWalletSecondUser, {
             where: { id: firstCoinWalletSecondUser.id },
         });
-        let updateSecondCoinWalletSecondUser = {balance:(+secondCoinWalletSecondUser.balance) + (+amount)};
+        let updateSecondCoinWalletSecondUser = {balance:+secondCoinWalletSecondUser.balance + (+amount)};
         await BalanceCrypto.update(updateSecondCoinWalletSecondUser, {
             where: { id: secondCoinWalletSecondUser.id },
         });
