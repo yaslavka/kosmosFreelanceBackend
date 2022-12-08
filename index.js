@@ -3,18 +3,18 @@ const fs = require("fs");
 const http = require("http");
 const { Server } = require("socket.io");
 const https = require("https");
-const privateKey = fs.readFileSync(
-  "/etc/letsencrypt/live/eldorad.host/privkey.pem",
-  "utf8"
-);
-const certificate = fs.readFileSync(
-  "/etc/letsencrypt/live/eldorad.host/cert.pem",
-  "utf8"
-);
-const ca = fs.readFileSync(
-  "/etc/letsencrypt/live/eldorad.host/chain.pem",
-  "utf8"
-);
+// const privateKey = fs.readFileSync(
+//   "/etc/letsencrypt/live/eldorad.host/privkey.pem",
+//   "utf8"
+// );
+// const certificate = fs.readFileSync(
+//   "/etc/letsencrypt/live/eldorad.host/cert.pem",
+//   "utf8"
+// );
+// const ca = fs.readFileSync(
+//   "/etc/letsencrypt/live/eldorad.host/chain.pem",
+//   "utf8"
+// );
 const express = require("express"); 
 const sequelize = require("./db");
 const models = require("./models/models");
@@ -34,11 +34,11 @@ const coinConst = require("./utils/coinConst");
 const exchangeParser = require("./service/exchangeParser");
 
 
-const credentials = {
-  key: privateKey,
-  cert: certificate,
-  ca: ca,
-};
+// const credentials = {
+//   key: privateKey,
+//   cert: certificate,
+//   ca: ca,
+// };
 
 app.use(cors());
 app.use(express.json());
@@ -48,8 +48,8 @@ app.use(fileUpload({}));
 app.use("/api", router);
 app.use(ErrorHandlingMiddleware);
 const server = http.createServer(app);
-const serve = https.createServer(credentials, app);
-require('./service/io.js').init(serve);
+//const serve = https.createServer(credentials, app);
+require('./service/io.js').init(server);
 const io = require('./service/io.js').get();
 
 
@@ -139,8 +139,8 @@ const start = async () => {
   try {
     await sequelize.authenticate();
     await sequelize.sync();
-    server.listen(80, () => console.log(`server started on port 80`));
-    serve.listen(443, () => console.log(`server started on port 443`));
+    server.listen(5000, () => console.log(`server started on port 5000`));
+    //serve.listen(443, () => console.log(`server started on port 443`));
     const typeMatrixSecondCount = await models.TypeMatrixSecond.count()
     const typeMatrixThirdCount = await models.TypeMatrixThird.count()
     if (typeMatrixSecondCount === 0) {

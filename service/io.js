@@ -2,10 +2,10 @@ let io;
 const { Server } = require("socket.io");
 
 module.exports = {
-  init: (serve) => {
-    io = new Server(serve, {
+  init: (server) => {
+    io = new Server(server, {
       cors: {
-        origin: "https://kosmoss.host",
+        origin: "http://localhost:3000",
         methods: ["GET", "POST"],
       },
     });

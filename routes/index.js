@@ -14,7 +14,7 @@ const OrderRouter = require('./orderRouter')
 const ChartRouter = require('./chartRouter')
 const ExchangeHistoryRouter = require('./exchangeHistoryRouter')
 const settingsRouter = require('./settingsRouter')
-
+const tinkoffRouter = require('./tinkoffRouter')
 
    
 router.use('/user', userRouter)
@@ -33,6 +33,7 @@ router.use('/charts', ChartRouter)
 router.use('/trade-history', ExchangeHistoryRouter)
 router.use('/settings', settingsRouter)
 router.use('/registration', settingsRouter)
+router.use('/tinkoff', tinkoffRouter)
 
 
 
